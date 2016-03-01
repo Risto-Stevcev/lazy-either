@@ -1,0 +1,31 @@
+{
+  "name": "lazy-either",
+  "version": "0.0.0",
+  "description": "A lazy implementation of the Fantasy Land Either type",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/Risto-Stevcev/lazy-either.git"
+  },
+  "keywords": [
+    "lazy",
+    "either",
+    "type",
+    "fantasy",
+    "land",
+    "monad"
+  ],
+  "author": "Risto Stevcev",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  },
+  "dependencies": {
+    "ramda": "^0.19.1",
+    "sanctuary": "^0.9.0"
+  }
+}
