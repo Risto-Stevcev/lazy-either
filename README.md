@@ -1,5 +1,7 @@
 # LazyEither
 
+[![Build Status](https://travis-ci.org/Risto-Stevcev/lazy-either.svg)](https://travis-ci.org/Risto-Stevcev/lazy-either)
+
 The `LazyEither` type is used to represent a lazy `Either` value. It is similar to the `Future` and `Promise` types. The constructor continuation function parameter and *eventual* return value is an `Either` type. The execution is delayed until the value is requested using one of it's methods.
 
 The implementation is more favorable than the `Future` type because it is very easy to compose elegant pipelines, and it handles errors nicely. If `fork`-like branching is desired, it can be done just by resolving the pipeline using `value` and checking whether the result `isLeft` or `isRight` (though branching is not usually needed). See the examples section for more details.
