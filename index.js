@@ -1,1 +1,1 @@
-module.exports = require('./src/either')
+module.exports = require('./src/either').LazyEither
