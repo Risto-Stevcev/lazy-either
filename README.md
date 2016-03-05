@@ -107,6 +107,13 @@ Lifts a function of arity `1` into one that returns a `LazyEither` instance.
 
 Lifts a function of arity `n` into one that returns a `LazyEither` instance.
 
+#### `LazyEither.promote`
+```hs
+:: Either a b -> LazyEither a b
+```
+
+Promotes an `Either` type to a `LazyEither` type.
+
 
 ### Instance methods
 

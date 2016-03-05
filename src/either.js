@@ -75,4 +75,6 @@ LazyEither.prototype.equals = function(m, resolve) {
 LazyEither.lift  = f => R.pipe(f, LazyEither.Right)
 LazyEither.liftN = (n, f) => R.curryN(n, R.pipe(f, LazyEither.Right))
 
+LazyEither.promote = either => LazyEither(resolve => resolve(either))
+
 module.exports = { LazyEither: LazyEither }

@@ -338,3 +338,23 @@ describe('Lift', function() {
     })
   })
 })
+
+
+
+describe('Promote', function() {
+  it('should promote an Either type to a LazyEither type (Left)', function(done) {
+    LazyEither.promote(S.Left('bad')).value(either => {
+      expect(either.isLeft).to.be.true
+      expect(either.value).to.equal('bad')
+      done()
+    })
+  })
+
+  it('should promote an Either type to a LazyEither type (Right)', function(done) {
+    LazyEither.promote(S.Right('good')).value(either => {
+      expect(either.isRight).to.be.true
+      expect(either.value).to.equal('good')
+      done()
+    })
+  })
+})
