@@ -1,12 +1,12 @@
 'use strict'
-const LazyEither = require('lazy-either').LazyEither
+const LazyEither = require('..')
 const S = require('sanctuary')
 
-//:: (Num -> a) -> LazyEither (Either e a)
+//:: (Number, a) -> LazyEither (Either e a)
 let delayed = (ms, val) => LazyEither(resolve => {
   ms > 1000 ? resolve(S.Left(Error('Delay too long')))
             : setTimeout(() => resolve(S.Right(val)), ms)
 })
 
-delayed(500, 'Hello').value(result => console.log(result))  // returns Right('Hello')
-delayed(1001, 'Hey').value(result => console.log(result))  // returns Left(Error('Delay too long'))
+delayed(500, 'Hello').value(console.log)  // returns Right('Hello')
+delayed(1001, 'Hey').value(console.log)  // returns Left(Error('Delay too long'))
