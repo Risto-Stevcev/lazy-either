@@ -2,7 +2,7 @@
 const R = require('ramda')
     , S = require('sanctuary')
 
-let LazyEither = function(f) {
+const LazyEither = function(f) {
   if (!(this instanceof LazyEither)) {
     return new LazyEither(f)
   }
@@ -10,71 +10,71 @@ let LazyEither = function(f) {
 }
 
 LazyEither.prototype.value = function(resolve) {
-  this._value(res => resolve(res))
+  this._value(resolve)
 }
 
-LazyEither.of = LazyEither.Right = function(x) {
-  return new LazyEither(function(resolve) { return resolve(S.Right(x)) })
+LazyEither['fantasy-land/of'] = LazyEither.Right = function(x) {
+  return new LazyEither(S.T(S.Right(x)))
 }
-LazyEither.prototype.of = LazyEither.of
 
 LazyEither.Left = function(x) {
-  return new LazyEither(function(resolve) { return resolve(S.Left(x)) })
+  return new LazyEither(S.T(S.Left(x)))
 }
 
-LazyEither.prototype.chain = function(f) {
-  return new LazyEither(function(resolve) {
-    this._value(res => res.isLeft ? resolve(res) : f(res.value)._value(result => resolve(result)))
-  }.bind(this))
+LazyEither.prototype['fantasy-land/chain'] = function(f) {
+  const self = this
+  return new LazyEither(resolve => {
+    self._value(S.either(a => resolve(S.Left(a)), b => f(b)._value(resolve)))
+  })
 }
 
-LazyEither.prototype.map = function(f) {
-  return this.chain(function(a) { return LazyEither.Right(f(a)) })
+LazyEither.prototype['fantasy-land/map'] = function(f) {
+  return S.chain(S.compose(LazyEither.Right, f), this)
 }
 
-LazyEither.prototype.bimap = function(leftFn, rightFn) {
-  return new LazyEither(function(resolve) {
-    this._value(result => result.isLeft ? resolve(S.Left(leftFn(result.value)))
-                                        : resolve(S.Right(rightFn(result.value))))
-  }.bind(this))
+LazyEither.prototype['fantasy-land/bimap'] = function(leftFn, rightFn) {
+  const self = this
+  return new LazyEither(resolve => {
+    self._value(S.compose(resolve, S.either(leftFn, rightFn)))
+  })
 }
 
-LazyEither.prototype.ap = function(m) {
-  return new LazyEither(function(resolve) {
+LazyEither.prototype['fantasy-land/ap'] = function(other) {
+  const self = this
+  return new LazyEither(resolve => {
     let applyFn, val
-    let doReject = R.once(resolve)
- 
-    var resolveIfDone = function() {
+    const doReject = R.once(resolve)
+
+    const resolveIfDone = () => {
       if (applyFn && applyFn.isLeft)
         doReject(applyFn)
       else if (val && val.isLeft)
         doReject(val)
-      else if (applyFn != null && val != null) {
+      else if (applyFn != null && val != null)
         resolve(S.Right(applyFn.value(val.value)))
-      }
     }
 
-    this._value(fn => {
+    other._value(fn => {
       applyFn = fn
       resolveIfDone()
     })
 
-    m._value(result => {
+    self._value(result => {
       val = result
       resolveIfDone()
     })
-  }.bind(this))
+  })
 }
 
-LazyEither.prototype.equals = function(m, resolve) {
+LazyEither.prototype['fantasy-land/equals'] = function(other, resolve) {
   this._value(res => {
-    m._value(mres => resolve(res.isLeft === mres.isLeft && res.value === mres.value))
+    other._value(S.compose(resolve, S.equals(res)))
   })
 }
 
 LazyEither.lift  = f => R.pipe(f, LazyEither.Right)
 LazyEither.liftN = (n, f) => R.curryN(n, R.pipe(f, LazyEither.Right))
 
-LazyEither.promote = either => LazyEither(resolve => resolve(either))
+LazyEither.promote = S.compose(LazyEither, S.T)
 
 module.exports = { LazyEither: LazyEither }

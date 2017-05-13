@@ -1,19 +1,27 @@
 'use strict'
-const LazyEither = require('lazy-either').LazyEither
+const LazyEither = require('..')
 const fs = require('fs')
+    , os = require('os')
+    , path = require('path')
     , R  = require('ramda')
     , S  = require('sanctuary')
 
-//:: (Either e String) -> LazyEither (Either e [String])
-let ls = path => LazyEither(resolve =>
-  fs.readdir(path, (err, files) => resolve(err ? S.Left(err) : S.Right(files))))
+//:: String -> String -> String
+const join = S.curry2(path.join)
 
-//:: (Either e String) -> LazyEither (Either e String)
-let cat = file => LazyEither(resolve =>
-  fs.readFile(file, 'utf8', (err, data) => resolve(err ? S.Left(err) : S.Right(data))))
+//:: String -> LazyEither (Either e [String])
+const ls = path => LazyEither(resolve =>
+  fs.readdir(path, (err, files) => resolve(err ? S.Left(err) : S.Right(S.map(join(path), files)))))
 
-//:: (Either e String) -> LazyEither (Either e String)
-let catDir = dir => ls(dir.value).chain(R.traverse(LazyEither.of, cat)).map(R.join('\n'))
+//:: String -> LazyEither (Either e String)
+const cat = file => LazyEither(resolve =>
+  fs.readFile(file, {encoding: 'utf8'}, (err, data) => resolve(err ? S.Left(err) : S.Right(data))))
+
+//:: String -> LazyEither (Either e String)
+const catDir =
+S.pipe([ls,
+        S.chain(S.traverse(LazyEither, cat)),
+        S.map(S.unlines)])
 
 // A LazyEither instance is executed when value gets called:
-catDir(S.Right('.')).value(data => console.log(data.value))
+catDir(os.homedir()).value(S.either(console.error, console.log))

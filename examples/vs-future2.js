@@ -1,5 +1,5 @@
 'use strict'
-/* This is the implementation using Futures. Notice how it doesn't have that extra type safety with Either, 
+/* This is the implementation using Futures. Notice how it doesn't have that extra type safety with Either,
  * the chain has a kink (chain1 and chain2), and worst of all, the pyramid of doom is back!
  */
 const futurizer = require('futurizer').futurizer
