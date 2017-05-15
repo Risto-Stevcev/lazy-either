@@ -1,3 +1,9 @@
+---
+
+🦋 [Fluture](https://github.com/fluture-js/Fluture) is a similar project but which is actively developed and provides more features.
+
+---
+
 # LazyEither
 
 [![Build Status](https://travis-ci.org/Risto-Stevcev/lazy-either.svg)](https://travis-ci.org/Risto-Stevcev/lazy-either)
