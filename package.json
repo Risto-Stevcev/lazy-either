@@ -1,6 +1,6 @@
 {
   "name": "lazy-either",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "A lazy implementation of the Fantasy Land Either type",
   "main": "index.js",
   "scripts": {
